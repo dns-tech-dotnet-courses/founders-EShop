@@ -1,4 +1,5 @@
 ﻿using EShop.Domain;
+using FluentResults;
 
 namespace EShop.Application
 {
@@ -10,16 +11,17 @@ namespace EShop.Application
         {
             _productRepository = productRepository;
         }
-        public IEnumerable<Product> Get()
+        public async Task<Result<IEnumerable<Product>>> Get()
         {
-            var products = _productRepository.Get();
-            return products;
+            var productsResult = await _productRepository.Get();
+            return productsResult;
         }
 
-        public IEnumerable<Product> GetById(int id)
+        public async Task<Result<IEnumerable<Product>>> GetById(int? id)
         {
-            var products = _productRepository.Get();
-            return products.Where(product => product.Id == id);
+            var products = await _productRepository.Get();
+            var filteredProducts = products.Value.Where(product => product.Id == id);
+            return Result.Ok(filteredProducts);
         }
     }
 }

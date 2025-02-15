@@ -5,6 +5,7 @@ namespace EShop.Application
     public class ProductHandler
     {
         private readonly IProductRepository _productRepository;
+        
         public ProductHandler(IProductRepository productRepository)
         {
             _productRepository = productRepository;

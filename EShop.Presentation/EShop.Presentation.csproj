@@ -14,4 +14,10 @@
     <ProjectReference Include="..\EShop.Application\EShop.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Products.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

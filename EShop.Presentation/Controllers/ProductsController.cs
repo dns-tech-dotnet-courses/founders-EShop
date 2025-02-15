@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using EShop.Application;
 
 namespace EShop.Presentation.Controllers
 {
@@ -7,19 +7,25 @@ namespace EShop.Presentation.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private Product[] products =
-        [
-        new Product { Id = 1, Name = "Iphone", Price = 333 },
-        new Product { Id = 2, Name = "Iphone1", Price = 444 },
-        new Product { Id = 3, Name = "Iphone2", Price = 555 },
-        new Product { Id = 4, Name = "Iphone3", Price = 666 },
-        new Product { Id = 5, Name = "Iphone4", Price = 777 }
-        ];
-
+        
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IEnumerable<ProductDto> Get([FromQuery] decimal? priceFilter, [FromQuery] string? priceSortOrder)
         {
-            return products;
+            var handler = new ProductHandler();
+            var products = handler.Get();
+
+            if (priceFilter is not null)
+                products = products.Where(p => p.Price <= priceFilter);
+
+            if (!string.IsNullOrEmpty(priceSortOrder))
+            {
+                products = priceSortOrder.Equals("desc", StringComparison.OrdinalIgnoreCase)
+                    ? products.OrderByDescending(p => p.Price)
+                    : products.OrderBy(p => p.Price);
+            }
+
+            var productsDto = products.Select(p => new ProductDto(p.Name, p.Price));
+            return productsDto;
         }
 
     }
